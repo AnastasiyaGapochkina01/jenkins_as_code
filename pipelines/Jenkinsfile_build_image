@@ -1,0 +1,36 @@
+pipeline{
+    environment {
+        registry = '192.168.56.11:5000/'
+        gitlab = 'http://192.168.56.12/root/docker.git'
+        image = ''
+    }
+    agent any
+    options {
+        ansiColor('xterm')
+    }
+    parameters {
+        choice(name: "docker_branch", choices: ['main', 'dev'])
+        choice(name: 'container', choices: ['php-fpm', 'nginx', 'jenkins'])
+        booleanParam(name: "use_cache", defaultValue: false)
+    }
+    stages{
+        stage('Build image'){
+            steps{
+                script{
+                    def name = "$registry${params.container}:${params.docker_branch}-$BUILD_NUMBER"
+                    git([url: "$gitlab", branch: params.docker_branch, credentialsId: 'jenkins-user-connect-gitlab'])
+                    dir("${params.container}"){
+                        image = docker.build name
+                    }
+                }
+            }
+        }
+        stage('Push image'){
+            steps{
+                script{
+                    image.push()
+                }
+            }
+        }
+    }
+}

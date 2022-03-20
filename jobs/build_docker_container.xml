@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?><flow-definition>
+    <actions/>
+    <description/>
+    <keepDependencies>false</keepDependencies>
+    <properties/>
+    <triggers/>
+    <definition class="org.jenkinsci.plugins.workflow.cps.CpsScmFlowDefinition">
+        <scriptPath>Jenkinsfile_build_image</scriptPath>
+        <lightweight>true</lightweight>
+        <scm class="hudson.plugins.git.GitSCM">
+            <userRemoteConfigs>
+                <hudson.plugins.git.UserRemoteConfig>
+                    <url>http://192.168.56.12/root/pipelines.git</url>
+                    <credentialsId>jenkins-user-connect-gitlab</credentialsId>
+                </hudson.plugins.git.UserRemoteConfig>
+            </userRemoteConfigs>
+            <branches>
+                <hudson.plugins.git.BranchSpec>
+                    <name>*/main</name>
+                </hudson.plugins.git.BranchSpec>
+            </branches>
+            <configVersion>2</configVersion>
+            <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+            <gitTool>Default</gitTool>
+        </scm>
+    </definition>
+</flow-definition>

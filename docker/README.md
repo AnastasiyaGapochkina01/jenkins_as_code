@@ -12,4 +12,7 @@
 ### Переменные окружения
 |ENV|Описание|
 |----|----|
-||
+|ADMIN_USER|username админского пользователя (ex. admin)|
+|ADMIN_FULL_NAME|Полное имя админского пользователя (ex. Admin Admin)|
+|ADMIN_PASSWORD|Пароль админского пользователя|
+|JENKINS_USER_PASSWORD|Пароль юзера jenkins в gitlab. Используется для подключения к gitlab|

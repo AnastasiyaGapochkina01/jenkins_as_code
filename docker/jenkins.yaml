@@ -9,7 +9,7 @@ credentials:
             scope: GLOBAL
         - usernamePassword:
             id: "jenkins-user-connect-gitlab"
-            password: "jenkins123"
+            password: "${JENKINS_USER_PASSWORD}"
             scope: GLOBAL
             username: "jenkins"
 
@@ -18,13 +18,13 @@ jenkins:
     local:
       allowsSignup: false
       users:
-        - id: agapochkina
-          name: Anastasiya Gapochkina
-          password: admin123
+        - id: ${ADMIN_USER}
+          name: ${ADMIN_FULL_NAME}
+          password: ${ADMIN_PASSWORD}
   authorizationStrategy:
     projectMatrix:
       permissions:
-        - "Overall/Administer:agapochkina"
+        - "Overall/Administer:${ADMIN_USER}"
         - "View/Delete:authenticated"
         - "View/Read:authenticated"
         - "View/Configure:authenticated"

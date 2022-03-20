@@ -1,0 +1,36 @@
+---
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+        - gitLabApiTokenImpl:
+            apiToken: "{AQAAABAAAAAgm5el8HKY2sI9t8HLOEJAM7m0jm/OAzjFzHgOhj/Swu81dbAW2WB++WjscOEkc/zp}"
+            id: "gitlab-connection-token"
+            scope: GLOBAL
+        - usernamePassword:
+            id: "jenkins-user-connect-gitlab"
+            password: "jenkins123"
+            scope: GLOBAL
+            username: "jenkins"
+
+jenkins:
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: agapochkina
+          name: Anastasiya Gapochkina
+          password: admin123
+  authorizationStrategy:
+    projectMatrix:
+      permissions:
+        - "Overall/Administer:agapochkina"
+        - "View/Delete:authenticated"
+        - "View/Read:authenticated"
+        - "View/Configure:authenticated"
+        - "View/Create:authenticated"
+
+unclassified:
+  location:
+    url: http://jenkins:8080/
+    adminAddress: admin@admin.com

@@ -1,0 +1,69 @@
+---
+- hosts: jenkins
+  become: true
+  vars:
+    image: '192.168.56.11:5000/jenkins'
+
+  tasks:
+
+    - name: Pull image
+      shell: docker pull {{ image }}:{{ tag }}
+
+    - name: Create jobs folder
+      file:
+        path: /opt/jenkins
+        state: directory
+
+    - name: Copy jobs xml from git repo
+      git:
+        accept_hostkey: yes
+        repo: git@gitlab:root/jobs.git
+        dest: /opt/jenkins/jobs
+        clone: yes
+        update: yes
+
+    - name: Create unit file
+      template:
+        src: systemd-unit.j2
+        dest: /etc/systemd/system/docker-jenkins.service
+        owner: root
+        group: root
+        mode: 0644
+      register: create_unit_file
+
+    - name: Daemon reload
+      systemd:
+        daemon_reload: yes
+
+    - name: Stop container
+      systemd:
+        name: docker-jenkins.service
+        state: stopped
+
+    - name: Start jenkins container
+      systemd:
+        name: docker-jenkins.service
+        state: started
+
+    - name: Enable unit
+      systemd:
+        name: docker-jenkins.service
+        enabled: yes
+
+    - name: Check is container really started
+      command: systemctl is-active "docker-jenkins"
+
+    - name: Set executable bit to script
+      shell: docker exec -it jenkins /bin/bash -c 'chmod +x /var/jenkins_home/import_jobs.sh'
+
+    - name: Check is Jenkins available
+      uri:
+        url: "http://localhost:8080/login"
+      register: result
+      until: result.status == 200
+      retries: 10
+      delay: 60
+      
+    - name: Import jobs
+      shell: docker exec -it jenkins /bin/bash -c '/var/jenkins_home/import_jobs.sh'
+      
